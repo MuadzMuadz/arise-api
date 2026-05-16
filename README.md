@@ -44,7 +44,7 @@ Project docs: [`../docs/`](../docs/) (one-pager, PRD, schema, moodboard, roadmap
 
 - Production: `https://api.tap-in.click`
 - OpenAPI docs: `https://api.tap-in.click/docs`
-- Local: `http://localhost:3000/v1`
+- Local: `http://localhost:4000/v1`
 
 ## Dev Environment
 
@@ -88,9 +88,9 @@ pnpm dev
 ```
 
 Verify:
-- API health: <http://localhost:3000/v1/health>
-- Swagger UI: <http://localhost:3000/docs>
-- OpenAPI JSON: <http://localhost:3000/openapi.json>
+- API health: <http://localhost:4000/v1/health>
+- Swagger UI: <http://localhost:4000/docs>
+- OpenAPI JSON: <http://localhost:4000/openapi.json>
 
 ## Common Commands
 
@@ -149,36 +149,4 @@ arise-api/
 ├── src/
 │   ├── common/
 │   │   ├── filters/          ← RFC 7807 problem+json
-│   │   └── prisma/           ← PrismaService (global, UUID v7 extension)
-│   ├── config/
-│   │   └── env.ts            ← zod env schema + validator
-│   ├── modules/
-│   │   └── health/           ← /v1/health (proof of life)
-│   │   # ── tambah module per sprint (auth, users, profiles, ...) ──
-│   ├── app.module.ts
-│   └── main.ts               ← Bootstrap (Swagger, ValidationPipe, ProblemJsonFilter)
-├── test/                     ← e2e tests
-├── Dockerfile                ← Production image (multi-stage)
-├── .env.example
-├── package.json
-├── tsconfig.json
-└── README.md
-```
-
-## Phase 1 vs Phase 2 (Infra)
-
-| Concern | Phase 1 (MVP) | Phase 2 |
-|---|---|---|
-| Queue/Background jobs | `@nestjs/schedule` cron in-process | BullMQ + Redis |
-| Email | `MAIL_TRANSPORT=console` (stdout) | SMTP (Resend/Mailgun/Postmark) |
-| UUID v7 | Client-side via `uuidv7` lib | (same — portable) |
-| Cache | None (or in-memory `cache-manager`) | Redis |
-
-## Reference
-
-- Project docs: `../docs/`
-- Database schema (full): `../docs/03-database-schema.md`
-- PRD: `../docs/02-spec-prd.md`
-- Roadmap: `../docs/05-roadmap-mvp.md`
-- Project rules (Claude): `claude-rules/CLAUDE.md`
-- Repo decisions log: `claude-rules/decisions/`
+│

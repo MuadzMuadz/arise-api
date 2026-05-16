@@ -1,0 +1,28 @@
+# <type>(<scope>): <subject>  (max 72 chars)
+#
+# Types:
+#   feat     - new feature
+#   fix      - bug fix
+#   refactor - code change yang gak nambah feature / fix bug
+#   docs     - dokumentasi
+#   chore    - tooling, deps, build config
+#   test     - tambah/fix test
+#   perf     - perf improvement
+#   ci       - CI/CD config
+#
+# Scopes (per arise-api module):
+#   auth, users, profiles, awakening, stats, quests, workouts, worship,
+#   ranks, penalties, body-measurements, notifications, ai-coach, dungeons,
+#   integrations, prisma, config, health, common, scripts, deps
+#
+# Subject: imperative, lowercase, no period at end
+#   Good: "feat(auth): add JWT refresh endpoint"
+#   Bad:  "Added JWT refresh endpoint."
+#
+# ── Body (optional, after blank line) ──
+# Jelasin WHY, bukan WHAT. Wrap di 72 chars.
+#
+# ── Footer (optional) ──
+# Refs: #issue-number
+# Breaking: BREAKING CHANGE: <description>
+# Co-authored-by: Name <email>

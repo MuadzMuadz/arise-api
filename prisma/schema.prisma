@@ -1,0 +1,44 @@
+// ARISE — Prisma schema (skeleton baseline)
+//
+// Full schema reference: ../../docs/03-database-schema.md
+// Module implementation order: arise-api/claude-rules/context.md § "Module Implementation Order"
+//
+// Strategy:
+//   - UUID v7 generated CLIENT-SIDE via `uuidv7` lib (lihat ADR 0002)
+//     Rationale: reuse existing vanilla Postgres (no pg_uuidv7 extension required).
+//     Default value di-set di service layer / via Prisma extension hook.
+//   - Soft delete via `deletedAt` (timestamptz nullable)
+//   - All timestamps `timestamptz`
+//   - Indexes wajib di FK + frequently-queried columns
+//
+// Iteration plan: tambah model per-module sesuai sprint sequence (auth → users → profiles → ...).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Baseline: users
+// (skeleton — column list lengkap di docs/03-database-schema.md § 3.1)
+//
+// NOTE: `id` default value di-set di service layer pakai `uuidv7()` —
+// gak pake `@default(dbgenerated(...))` karena Postgres vanilla gak punya extension.
+// Lihat src/common/prisma/prisma.service.ts $extends() untuk auto-assignment.
+// ─────────────────────────────────────────────────────────────
+model User {
+  id              String    @id @db.Uuid
+  email           String    @unique @db.VarChar(255)
+  passwordHash    String?   @map("password_hash") @db.VarChar(255)
+  emailVerifiedAt DateTime? @map("email_verified_at") @db.Timestamptz
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt       DateTime? @map("deleted_at") @db.Timestamptz
+
+  @@index([deletedAt])
+  @@map("users")
+}

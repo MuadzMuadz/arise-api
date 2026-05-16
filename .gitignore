@@ -1,0 +1,64 @@
+# Dependencies
+node_modules/
+
+# Build
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+
+# Prisma generated
+prisma/generated/
+
+# OpenAPI generated (committed at release tag, ignored in dev)
+# openapi.json
+
+# Docker volumes
+postgres-data/
+redis-data/
+minio-data/
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Linter cache
+.eslintcache
+
+# SWC cache
+.swc/
+
+# Misc temp
+tmp/
+temp/
+*.swp
+*.swo
+
+# Generated Prisma client (kalo output ke custom path — default di node_modules so OK)
+# prisma/generated/
+
+# JetBrains
+*.iml

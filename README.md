@@ -1,6 +1,32 @@
-# arise-api
+# ⚔ ARISE API
 
-Backend REST API untuk **ARISE** — Hunter System tracker (Solo Leveling-themed).
+> *"Arise. Hunt. Level Up."*
+>
+> Hunter System tracker untuk olahraga, ibadah, dan produktivitas — DNA Solo Leveling.
+> Solo project, built for personal mastery first, public for portfolio.
+
+[![NestJS](https://img.shields.io/badge/NestJS-10-E0234E?logo=nestjs)](https://nestjs.com)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript)](https://www.typescriptlang.org)
+[![Prisma](https://img.shields.io/badge/Prisma-6-2D3748?logo=prisma)](https://www.prisma.io)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)](https://www.postgresql.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Phase](https://img.shields.io/badge/Phase-MVP%20Bootstrap-blue)](claude-rules/context.md)
+
+---
+
+## ✨ What is this?
+
+ARISE turns real-life activity into a Hunter System:
+- **5 Stats** (STR, AGI, VIT, INT, SEN) yang naik berdasarkan workout, ibadah, body comp
+- **HP/MP system** — VIT cap HP, INT cap MP, SEN regen MP via ibadah (Sholat/tilawah/dzikir)
+- **Rank ladder** F → SSS (27 milestone)
+- **Daily Quest** generated rule-based, AI coach tier-up (Phase 2)
+- **Penalty system** dengan forgiveness mechanic — bukan brutal grinder
+
+Frontend repos: [arise-mobile](../arise-mobile) (Expo) · [arise-web](../arise-web) (Next.js 15)
+Project docs: [`../docs/`](../docs/) (one-pager, PRD, schema, moodboard, roadmap)
+
+---
 
 ## Stack
 

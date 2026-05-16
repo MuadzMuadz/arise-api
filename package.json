@@ -2,9 +2,21 @@
   "name": "arise-api",
   "version": "0.0.1",
   "description": "ARISE - Hunter System tracker backend (NestJS)",
-  "author": "Ryvn",
-  "private": true,
-  "license": "UNLICENSED",
+  "author": "Ryvn (Febry Karsidi)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ryvn/arise-api.git"
+  },
+  "keywords": [
+    "nestjs",
+    "prisma",
+    "solo-leveling",
+    "gamification",
+    "fitness-tracker",
+    "rpg-stats",
+    "habit-tracker"
+  ],
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -65,6 +77,15 @@
     "typescript": "^5.7.2",
     "unplugin-swc": "^1.5.1",
     "vitest": "^2.1.8"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "@swc/core",
+      "esbuild",
+      "prisma"
+    ]
   },
   "packageManager": "pnpm@11.1.0",
   "engines": {

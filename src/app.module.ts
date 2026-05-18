@@ -5,6 +5,7 @@ import { validateEnv } from './config/env';
 import { PrismaModule } from './common/prisma/prisma.module';
 import { HealthModule } from './modules/health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 
 @Module({
@@ -17,8 +18,9 @@ import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
     PrismaModule,
     HealthModule,
     AuthModule,
+    UsersModule,
     // ── Domain modules (added per roadmap §3, lihat arise-api/claude-rules/context.md) ──
-    // UsersModule, ProfilesModule, AwakeningModule, StatsModule,
+    // ProfilesModule, AwakeningModule, StatsModule,
     // QuestsModule, WorkoutsModule, WorshipModule, RanksModule, PenaltiesModule,
     // BodyMeasurementsModule, NotificationsModule
   ],

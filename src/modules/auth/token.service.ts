@@ -169,6 +169,12 @@ function parseDurationToMs(spec: string): number {
   if (!match) throw new Error(`Invalid duration spec: ${spec}`);
   const n = Number(match[1]);
   const mult =
-    match[2] === 's' ? 1_000 : match[2] === 'm' ? 60_000 : match[2] === 'h' ? 3_600_000 : 86_400_000;
+    match[2] === 's'
+      ? 1_000
+      : match[2] === 'm'
+        ? 60_000
+        : match[2] === 'h'
+          ? 3_600_000
+          : 86_400_000;
   return n * mult;
 }

@@ -42,12 +42,7 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     m = makeMocks();
-    svc = new AuthService(
-      m.prisma as any,
-      m.mail as any,
-      m.verifyEmail as any,
-      m.tokens as any,
-    );
+    svc = new AuthService(m.prisma as any, m.mail as any, m.verifyEmail as any, m.tokens as any);
   });
 
   describe('register', () => {

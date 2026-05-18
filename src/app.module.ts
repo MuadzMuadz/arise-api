@@ -6,6 +6,7 @@ import { PrismaModule } from './common/prisma/prisma.module';
 import { HealthModule } from './modules/health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { ProfilesModule } from './modules/profiles/profiles.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 
 @Module({
@@ -19,8 +20,9 @@ import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
     HealthModule,
     AuthModule,
     UsersModule,
+    ProfilesModule,
     // ── Domain modules (added per roadmap §3, lihat arise-api/claude-rules/context.md) ──
-    // ProfilesModule, AwakeningModule, StatsModule,
+    // AwakeningModule, StatsModule,
     // QuestsModule, WorkoutsModule, WorshipModule, RanksModule, PenaltiesModule,
     // BodyMeasurementsModule, NotificationsModule
   ],

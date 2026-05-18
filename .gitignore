@@ -29,6 +29,7 @@ Thumbs.db
 # Testing
 coverage/
 .nyc_output/
+test/
 
 # Prisma generated
 prisma/generated/
@@ -63,3 +64,6 @@ temp/
 # JetBrains
 *.iml
 .claude/
+
+# documentation
+/docs

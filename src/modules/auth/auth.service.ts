@@ -32,15 +32,23 @@ export interface LoginResult {
   user: AuthUserSummary;
 }
 
+export interface RefreshResult {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface MeResult {
+  id: string;
+  email: string;
+  emailVerifiedAt: Date | null;
+  createdAt: Date;
+}
+
 export interface RequestContext {
   userAgent?: string | null;
   ipAddress?: string | null;
 }
 
-/**
- * AuthService — orchestrates register, verify-email, login. Refresh /
- * logout / logout-all / me wired in Step 9-10 (via TokenService).
- */
 @Injectable()
 export class AuthService {
   private static readonly BCRYPT_ROUNDS = 12;
@@ -86,10 +94,9 @@ export class AuthService {
   }
 
   /**
-   * Login flow (plan § 4.4):
-   * - 401 `invalid_credentials` → wrong email OR wrong password (combined,
-   *   no info-leak). Soft-deleted user juga masuk sini.
-   * - 403 `email_not_verified` → credentials OK tapi email belum verified.
+   * Plan § 4.4 login:
+   * - 401 invalid_credentials  → wrong email OR password (combined, no leak)
+   * - 403 email_not_verified   → credentials OK tapi belum verify
    */
   async login(dto: LoginDto, ctx: RequestContext): Promise<LoginResult> {
     const user = await this.prisma.user.findUnique({
@@ -133,5 +140,66 @@ export class AuthService {
         emailVerifiedAt: user.emailVerifiedAt,
       },
     };
+  }
+
+  /** Refresh rotation. Forwards 401 dari TokenService.rotate (replay/expired/etc). */
+  async refresh(rawRefresh: string, ctx: RequestContext): Promise<RefreshResult> {
+    const { pair } = await this.tokens.rotate({
+      rawRefresh,
+      userAgent: ctx.userAgent,
+      ipAddress: ctx.ipAddress,
+    });
+    return { accessToken: pair.accessToken, refreshToken: pair.refreshToken };
+  }
+
+  /** Revoke single refresh token. Idempotent — gak fail kalo token gak ada. */
+  async logout(rawRefresh: string): Promise<void> {
+    await this.tokens.revoke(rawRefresh);
+  }
+
+  /** Revoke semua refresh aktif untuk user (semua device). */
+  async logoutAll(userId: string): Promise<void> {
+    await this.tokens.revokeAllForUser(userId);
+  }
+
+  async me(userId: string): Promise<MeResult> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        emailVerifiedAt: true,
+        createdAt: true,
+        deletedAt: true,
+      },
+    });
+    if (!user || user.deletedAt !== null) {
+      throw new UnauthorizedException('user_not_found');
+    }
+    return {
+      id: user.id,
+      email: user.email,
+      emailVerifiedAt: user.emailVerifiedAt,
+      createdAt: user.createdAt,
+    };
+  }
+
+  /**
+   * Plan § 4.3 — idempotent. Always returns { sent: true } even kalo:
+   * - email gak ada di DB
+   * - user soft-deleted
+   * - user udah verified
+   * Supaya gak leak existence. Token issuance silently skip di kasus itu.
+   */
+  async resendVerification(email: string): Promise<{ sent: true }> {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+      select: { id: true, email: true, emailVerifiedAt: true, deletedAt: true },
+    });
+    if (user && user.deletedAt === null && user.emailVerifiedAt === null) {
+      const token = await this.verifyEmail.issueFor(user.id);
+      await this.mail.sendVerificationEmail(user.email, token);
+    }
+    return { sent: true };
   }
 }

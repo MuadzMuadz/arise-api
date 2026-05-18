@@ -1,9 +1,17 @@
-import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { uuidv7 } from 'uuidv7';
 import { PrismaService } from '../../common/prisma/prisma.service';
 import { MailService } from './mail.service';
+import { TokenService } from './token.service';
 import { VerifyEmailService } from './verify-email.service';
+import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 
 export interface RegisterResult {
@@ -12,10 +20,26 @@ export interface RegisterResult {
   emailVerificationSent: boolean;
 }
 
+export interface AuthUserSummary {
+  id: string;
+  email: string;
+  emailVerifiedAt: Date | null;
+}
+
+export interface LoginResult {
+  accessToken: string;
+  refreshToken: string;
+  user: AuthUserSummary;
+}
+
+export interface RequestContext {
+  userAgent?: string | null;
+  ipAddress?: string | null;
+}
+
 /**
- * AuthService — orchestrates register + email verification flows.
- * Login / refresh / logout di-tambahin per Step 7 + 9 (lihat
- * docs/auth/implementation-plan.md § 9).
+ * AuthService — orchestrates register, verify-email, login. Refresh /
+ * logout / logout-all / me wired in Step 9-10 (via TokenService).
  */
 @Injectable()
 export class AuthService {
@@ -26,6 +50,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly mail: MailService,
     private readonly verifyEmail: VerifyEmailService,
+    private readonly tokens: TokenService,
   ) {}
 
   async register(dto: RegisterDto): Promise<RegisterResult> {
@@ -58,5 +83,55 @@ export class AuthService {
   async verifyEmailToken(token: string): Promise<{ verified: true }> {
     await this.verifyEmail.consume(token);
     return { verified: true };
+  }
+
+  /**
+   * Login flow (plan § 4.4):
+   * - 401 `invalid_credentials` → wrong email OR wrong password (combined,
+   *   no info-leak). Soft-deleted user juga masuk sini.
+   * - 403 `email_not_verified` → credentials OK tapi email belum verified.
+   */
+  async login(dto: LoginDto, ctx: RequestContext): Promise<LoginResult> {
+    const user = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+      select: {
+        id: true,
+        email: true,
+        passwordHash: true,
+        emailVerifiedAt: true,
+        deletedAt: true,
+      },
+    });
+
+    if (!user || user.deletedAt !== null || !user.passwordHash) {
+      throw new UnauthorizedException('invalid_credentials');
+    }
+
+    const passwordOk = await bcrypt.compare(dto.password, user.passwordHash);
+    if (!passwordOk) {
+      throw new UnauthorizedException('invalid_credentials');
+    }
+
+    if (user.emailVerifiedAt === null) {
+      throw new ForbiddenException('email_not_verified');
+    }
+
+    const { pair } = await this.tokens.issuePair({
+      userId: user.id,
+      email: user.email,
+      userAgent: ctx.userAgent,
+      ipAddress: ctx.ipAddress,
+    });
+
+    this.logger.log(`Login ${user.id} (${user.email})`);
+    return {
+      accessToken: pair.accessToken,
+      refreshToken: pair.refreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        emailVerifiedAt: user.emailVerifiedAt,
+      },
+    };
   }
 }

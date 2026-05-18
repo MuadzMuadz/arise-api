@@ -9,7 +9,7 @@ import { uuidv7 } from 'uuidv7';
  * Alternatif: pakai `Prisma.ModelName` enum, tapi requires extra introspection.
  * Manual list cukup explicit & safe untuk Phase 1.
  */
-const MODELS_WITH_UUID_ID = ['User'] as const;
+const MODELS_WITH_UUID_ID = ['User', 'RefreshToken', 'EmailVerifyToken'] as const;
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {

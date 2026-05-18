@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { MailService } from './mail.service';
+import { VerifyEmailService } from './verify-email.service';
 
 /**
  * Auth module — Sprint 1.
@@ -11,7 +12,7 @@ import { MailService } from './mail.service';
  */
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, MailService],
+  providers: [AuthService, MailService, VerifyEmailService],
   exports: [AuthService],
 })
 export class AuthModule {}

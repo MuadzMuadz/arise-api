@@ -18,7 +18,11 @@ export default defineConfig({
     exclude: ['node_modules', 'dist', 'test/**'],
     coverage: {
       provider: 'v8',
-      include: ['src/modules/auth/**/*.ts'],
+      include: [
+        'src/modules/auth/**/*.ts',
+        'src/modules/users/**/*.ts',
+        'src/modules/profiles/**/*.ts',
+      ],
       exclude: [
         'src/**/*.spec.ts',
         'src/**/dto/**',

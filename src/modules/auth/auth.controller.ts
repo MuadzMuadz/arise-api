@@ -11,6 +11,7 @@ import {
 } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { AuthService, RequestContext } from './auth.service';
+import { Public } from './decorators/public.decorator';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
@@ -24,6 +25,7 @@ import { VerifyEmailDto } from './dto/verify-email.dto';
 export class AuthController {
   constructor(private readonly auth: AuthService) {}
 
+  @Public()
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Sign up with email + password' })
@@ -33,6 +35,7 @@ export class AuthController {
     return this.auth.register(dto);
   }
 
+  @Public()
   @Post('verify-email')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Confirm email via verification token' })
@@ -42,6 +45,7 @@ export class AuthController {
     return this.auth.verifyEmailToken(dto.token);
   }
 
+  @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login — return access + refresh tokens' })

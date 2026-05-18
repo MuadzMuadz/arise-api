@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ConflictException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -37,12 +33,7 @@ describe('UsersService', () => {
 
   beforeEach(() => {
     m = makeMocks();
-    svc = new UsersService(
-      m.prisma as any,
-      m.tokens as any,
-      m.verifyEmail as any,
-      m.mail as any,
-    );
+    svc = new UsersService(m.prisma as any, m.tokens as any, m.verifyEmail as any, m.mail as any);
   });
 
   describe('getMe', () => {
@@ -219,9 +210,7 @@ describe('UsersService', () => {
         data: { passwordHash: string };
       };
       expect(updateArgs.data.passwordHash.startsWith('$2')).toBe(true);
-      expect(
-        await bcrypt.compare('NewPass12Chars!', updateArgs.data.passwordHash),
-      ).toBe(true);
+      expect(await bcrypt.compare('NewPass12Chars!', updateArgs.data.passwordHash)).toBe(true);
       expect(m.tokens.revokeAllForUser).toHaveBeenCalledWith(userId);
     });
   });

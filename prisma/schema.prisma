@@ -41,6 +41,7 @@ model User {
 
   refreshTokens     RefreshToken[]
   emailVerifyTokens EmailVerifyToken[]
+  profile           Profile?
 
   @@index([deletedAt])
   @@map("users")
@@ -90,4 +91,36 @@ model EmailVerifyToken {
   @@index([userId])
   @@index([expiresAt])
   @@map("email_verify_tokens")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Profile: hunter identity (biodata layer)
+// - 1:1 dengan User (FK @unique). Lazy-create: bisa null sampai onboarding.
+// - Email tetep di User (auth domain). Profile murni biodata.
+// - Required fields formula stats butuh: gender, birthDate, timezone.
+// ─────────────────────────────────────────────────────────────
+model Profile {
+  id          String   @id @db.Uuid
+  userId      String   @unique @map("user_id") @db.Uuid
+  displayName String   @map("display_name") @db.VarChar(60)
+  gender      Gender
+  birthDate   DateTime @map("birth_date") @db.Date
+  heightCm    Int?     @map("height_cm") @db.SmallInt
+  timezone    String   @default("Asia/Jakarta") @db.VarChar(64)
+  locale      String   @default("id-ID") @db.VarChar(16)
+  hunterTitle String?  @map("hunter_title") @db.VarChar(60)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+enum Gender {
+  male
+  female
+  other
+
+  @@map("gender")
 }

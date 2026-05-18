@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { validateEnv } from './config/env';
 import { PrismaModule } from './common/prisma/prisma.module';
 import { HealthModule } from './modules/health/health.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -13,8 +14,9 @@ import { HealthModule } from './modules/health/health.module';
     }),
     PrismaModule,
     HealthModule,
+    AuthModule,
     // ── Domain modules (added per roadmap §3, lihat arise-api/claude-rules/context.md) ──
-    // AuthModule, UsersModule, ProfilesModule, AwakeningModule, StatsModule,
+    // UsersModule, ProfilesModule, AwakeningModule, StatsModule,
     // QuestsModule, WorkoutsModule, WorshipModule, RanksModule, PenaltiesModule,
     // BodyMeasurementsModule, NotificationsModule
   ],
